@@ -222,6 +222,10 @@ display_menu() {
 }
 
 main() {
+    cd /root || {
+        echo "Failed to change to /root directory. Exiting."
+        exit 1
+    }
     check_dependencies
     display_menu
 }
