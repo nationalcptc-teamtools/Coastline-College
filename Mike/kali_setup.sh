@@ -9,6 +9,14 @@
     exit 1
 }
 
+# Change to root directory before execution
+change_to_root() {
+    cd /root || {
+        echo "Failed to change to /root directory. Exiting." >&2
+        exit 1
+    }
+}
+
 # Copy tmux config
 copy_tmux() {
     cp /root/Coastline-College/Mike/.tmux.conf /root/ || {
@@ -237,10 +245,7 @@ display_menu() {
 }
 
 main() {
-    cd /root || {
-        echo "Failed to change to /root directory. Exiting." >&2
-        exit 1
-    }
+    change_to_root
     check_dependencies
     display_menu
 }
