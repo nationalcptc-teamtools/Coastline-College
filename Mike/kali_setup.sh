@@ -122,7 +122,8 @@ install_headless() {
 
     install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu
 
-    su kali -c 'tldr -u'
+    tldr -u
+
     if command -v nvim >/dev/null; then
         echo "Neovim already installed. Skipping..."
     else
