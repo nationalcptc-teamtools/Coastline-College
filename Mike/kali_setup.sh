@@ -100,7 +100,7 @@ change_repos() {
 
 # Function to update Kali Linux
 update_kali() {
-    apt update -q && install_packages "dist-upgrade" && apt autoremove -yq
+    apt update -q && apt dist-upgrade -y && apt autoremove -yq
 }
 
 # Function to clean up
