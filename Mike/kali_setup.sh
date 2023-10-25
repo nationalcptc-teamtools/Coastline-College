@@ -136,7 +136,7 @@ cleanup() {
 install_headless() {
     update_kali
 
-    install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu
+    install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm
 
     mkdir -p /root/.local/share/tldr || {
         echo "Failed to create /root/.local/share/tldr. Exiting." >&2
