@@ -3,7 +3,7 @@
 # Check for help argument
 [[ $1 == "-h" || $1 == "--help" ]] && display_help
 
-# Verify root access
+# Verify running with sudo or as root
 [[ $EUID -ne 0 ]] && {
     echo "Run as root. Exiting."
     exit 1
@@ -149,7 +149,7 @@ install_neovim() {
         exit 1
     }
     cd build && cpack -G DEB && dpkg -i nvim-linux64.deb
-    download_and_unzip "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip" "$HOME/.fonts"
+    download_and_unzip "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip" "/root/.fonts"
 
     cargo install tree-sitter-cli
     curl -LO https://github.com/ClementTsang/bottom/releases/download/0.9.6/bottom_0.9.6_amd64.deb
@@ -159,7 +159,7 @@ install_neovim() {
     mv ~/.local/state/nvim ~/.local/state/nvim.bak
     mv ~/.cache/nvim ~/.cache/nvim.bak
     git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
-    cd /home/kali || return
+    cd /root || return
     rm -rf neovim
 }
 
@@ -183,7 +183,7 @@ install_all_pimp() {
         echo "Failed to run pimpmykali.sh" >&2
         exit 1
     }
-    cd /home/kali || exit
+    cd /root || exit
     rm -rf pimpmykali
     cleanup
 }
