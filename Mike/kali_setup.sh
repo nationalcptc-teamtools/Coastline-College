@@ -223,7 +223,7 @@ display_menu() {
 
 main() {
     cd /root || {
-        echo "Failed to change to /root directory. Exiting."
+        echo "Failed to change to /root directory. Exiting." >&2
         exit 1
     }
     check_dependencies
