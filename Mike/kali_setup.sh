@@ -9,6 +9,14 @@
     exit 1
 }
 
+# Copy tmux config
+copy_tmux() {
+    cp /root/Coastline-College/Mike/.tmux.conf /root/ || {
+        echo "Failed to copy .tmux.conf to /root/. Exiting." >&2
+        exit 1
+    }
+}
+
 # Install packages
 install_packages() {
     apt install -yq "$@" || {
@@ -210,6 +218,7 @@ display_menu() {
         echo "│   I: Install Headless    │"
         echo "│   D: Install Desktop     │"
         echo "│   A: Install All Tools   │"
+        echo "|   T: Copy tmux config    |"
         echo "│   C: Change Repos        │"
         echo "│   Q: Quit                │"
         echo "└───────────────────────────┘"
@@ -219,6 +228,7 @@ display_menu() {
         I | i) install_headless ;;
         D | d) install_desktop_default ;;
         A | a) install_all_pimp ;;
+        T | t) copy_tmux ;;
         C | c) change_repos ;;
         Q | q) reboot_func && exit 0 ;;
         *) echo "Invalid. Retry." ;;
