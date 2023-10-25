@@ -120,7 +120,7 @@ cleanup() {
 install_headless() {
     update_kali
 
-    install_packages "kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu"
+    install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu
 
     su kali -c 'tldr -u'
     if command -v nvim >/dev/null; then
@@ -166,7 +166,7 @@ install_neovim() {
 # Function to install Desktop
 install_desktop_default() {
     install_headless
-    install_packages "kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp" && systemctl enable --now xrdp
+    install_packages kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp && systemctl enable --now xrdp
     cleanup
 }
 
