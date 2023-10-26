@@ -222,15 +222,15 @@ reboot_func() {
 display_menu() {
     while true; do
         echo "┌───────────────────────────┐"
-        echo "│      Choose an Option    │"
+        echo "│      Choose an Option     │"
         echo "├───────────────────────────┤"
-        echo "│   U: Update Kali Linux   │"
-        echo "│   I: Install Headless    │"
-        echo "│   D: Install Desktop     │"
-        echo "│   A: Install All Tools   │"
-        echo "|   T: Copy tmux config    |"
-        echo "│   C: Change Repos        │"
-        echo "│   Q: Quit                │"
+        echo "│   U: Update Kali Linux    │"
+        echo "│   I: Install Headless     │"
+        echo "│   D: Install Desktop      │"
+        echo "│   A: Install All Tools    │"
+        echo "|   T: Copy tmux config     |"
+        echo "│   C: Change Repos         │"
+        echo "│   Q: Quit                 │"
         echo "└───────────────────────────┘"
         read -rp "Your choice: " choice
         case $choice in
