@@ -257,7 +257,7 @@ reboot_func() {
         if [[ $startx_needed -eq 1 ]]; then
             startx
         else
-            echo "Exiting script without rebooting or starting X"
+            echo "Exiting script without rebooting and starting X"
         fi
     fi
 }
