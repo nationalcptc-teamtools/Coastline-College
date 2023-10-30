@@ -251,7 +251,15 @@ install_all_pimp() {
 # Quit function
 reboot_func() {
     read -rp "Would you like to reboot now? (y/N): " reboot_choice
-    [[ $reboot_choice =~ ^[Yy]$ ]] && sudo reboot || echo "Exiting script without rebooting" # Using sudo for reboot
+    if [[ $reboot_choice =~ ^[Yy]$ ]]; then
+        sudo reboot
+    else
+        if [[ $startx_needed -eq 1 ]]; then
+            startx
+        else
+            echo "Exiting script without rebooting or starting X"
+        fi
+    fi
 }
 
 # Display TUI menu
@@ -262,7 +270,7 @@ display_menu() {
         echo "├───────────────────────────┤"
         echo "│   U: Update Kali Linux    │"
         echo "│   I: Install Headless     │"
-        echo "│   D: Install Desktop      │"
+        echo "│   D: Install Desktop;     │"
         echo "│   A: Install All Tools    │"
         echo "|   V: Install OpenVAS      |"
         echo "|   T: Copy tmux config     |"
@@ -273,8 +281,14 @@ display_menu() {
         case $choice in
         U | u) update_kali ;;
         I | i) install_headless ;;
-        D | d) install_desktop_default ;;
-        A | a) install_all_pimp ;;
+        D | d)
+            install_desktop_default
+            startx_needed=1
+            ;;
+        A | a)
+            install_all_pimp
+            startx_needed=1
+            ;;
         V | v) install_openvas ;;
         T | t) copy_tmux ;;
         C | c) change_repos ;;
@@ -285,6 +299,7 @@ display_menu() {
 }
 
 main() {
+    startx_needed=0
     change_to_root
     check_dependencies
     display_menu
