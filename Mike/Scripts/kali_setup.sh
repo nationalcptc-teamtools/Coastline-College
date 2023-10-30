@@ -175,7 +175,7 @@ configure_tldr() {
 install_headless() {
     update_kali
 
-    install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm docker.io ufw
+    install_packages kali-linux-headless htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm docker.io ufw
 
     systemctl enable --now docker
 
