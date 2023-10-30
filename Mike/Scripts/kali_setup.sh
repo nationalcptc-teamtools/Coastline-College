@@ -132,20 +132,50 @@ cleanup() {
     fi
 }
 
-# Function to install headless tools
-install_headless() {
-    update_kali
+# Function to enable ssh
+enable_ssh() {
+    systemctl enable --now ssh || {
+        echo "Failed to enable ssh. Exiting." >&2
+        exit 1
+    }
 
-    install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm docker.io
+    ufw allow 22/tcp || {
+        echo "Failed to allow ssh. Exiting." >&2
+        exit 1
+    }
 
-    systemctl enable docker --now
+    sed -i 's|PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config || {
+        echo "Failed to change sshd_config. Exiting." >&2
+        exit 1
+    }
 
+    systemctl restart ssh || {
+        echo "Failed to restart ssh. Exiting." >&2
+        exit 1
+    }
+}
+
+# Function to configure tldr
+configure_tldr() {
     mkdir -p /root/.local/share/tldr || {
         echo "Failed to create /root/.local/share/tldr. Exiting." >&2
         exit 1
     }
 
     tldr -u
+}
+
+# Function to install headless tools
+install_headless() {
+    update_kali
+
+    install_packages kali-linux-headless kali-linux-firmware htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm docker.io ufw
+
+    systemctl enable --now docker
+
+    enable_ssh
+
+    configure_tldr
 
     if command -v nvim >/dev/null; then
         echo "Neovim already installed. Skipping..."
