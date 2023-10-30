@@ -182,7 +182,7 @@ install_headless() {
     enable_ssh
 
     configure_tldr
-
+    read -rp "Continue?" confirmation
     if command -v nvim >/dev/null; then
         echo "Neovim already installed. Skipping..."
     else
