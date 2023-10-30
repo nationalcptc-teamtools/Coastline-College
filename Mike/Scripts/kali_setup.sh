@@ -19,10 +19,16 @@ change_to_root() {
 
 # Copy tmux config
 copy_tmux() {
+    read -rp "Copy tmux config? (y/N): " confirmation
+    [[ $confirmation =~ ^[Yy]$ ]] || {
+        echo "Cancelled."
+        return
+    }
     cp /root/Coastline-College/Mike/Scripts/.tmux.conf /root/ || {
         echo "Failed to copy .tmux.conf to /root/. Exiting." >&2
         exit 1
     }
+    echo "Copied .tmux.conf to /root/"
 }
 
 # Install packages
