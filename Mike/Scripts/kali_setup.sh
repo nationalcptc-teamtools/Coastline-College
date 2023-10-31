@@ -81,7 +81,7 @@ download_and_unzip() {
 remove_directory() {
     local dir_path="$1"
     [ -d "$dir_path" ] && {
-        echo "Removing directory $dir_path" # Debug statement
+        echo "Removing directory $dir_path"
         rm -rf "$dir_path"
     }
 }
@@ -171,24 +171,59 @@ configure_tldr() {
     tldr -u
 }
 
+# Function to install docker compose
+install_docker() {
+    curl -fsSL https://get.docker.com -o get-docker.sh || {
+        echo "Failed to download get-docker.sh. Exiting." >&2
+        exit 1
+    }
+
+    sh get-docker.sh || {
+        echo "Failed to run get-docker.sh. Exiting." >&2
+        exit 1
+    }
+
+    rm get-docker.sh || {
+        echo "Failed to remove get-docker.sh. Exiting." >&2
+        exit 1
+    }
+
+    usermod -aG docker root || {
+        echo "Failed to add root to docker group. Exiting." >&2
+        exit 1
+    }
+
+    systemctl enable --now docker || {
+        echo "Failed to enable docker. Exiting." >&2
+        exit 1
+    }
+
+    # Check for "docker compose command"
+    ! command -v docker compose >/dev/null && {
+        echo "docker compose command not found. Exiting..." >&2
+        exit 1
+    } || echo "docker compose command found. Continuing..."
+}
+
 # Function to install headless tools
 install_headless() {
     update_kali
-
-    install_packages kali-linux-headless htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm docker.io ufw
-
-    systemctl enable --now docker
-
+    read -rp "Continue?" confirmation #debug
+    install_packages kali-linux-headless htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm ufw
+    read -rp "Continue?" confirmation #debug
     enable_ssh
-
+    read -rp "Continue?" confirmation #debug
+    install_docker
+    read -rp "Continue?" confirmation #debug
     configure_tldr
-    read -rp "Continue?" confirmation
+    read -rp "Continue?" confirmation #debug
     if command -v nvim >/dev/null; then
         echo "Neovim already installed. Skipping..."
     else
         install_neovim
     fi
     cleanup
+    read -rp "Continue?" confirmation #debug
 }
 
 # Function to install neovim
@@ -209,16 +244,21 @@ install_neovim() {
         exit 1
     }
     cd build && cpack -G DEB && dpkg -i nvim-linux64.deb
+
     download_and_unzip "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip" "/root/.fonts"
+    fc-cache -fv
 
     cargo install tree-sitter-cli
+
     curl -LO https://github.com/ClementTsang/bottom/releases/download/0.9.6/bottom_0.9.6_amd64.deb
     dpkg -i bottom_0.9.6_amd64.deb
+
     mv ~/.config/nvim ~/.config/nvim.bak
     mv ~/.local/share/nvim ~/.local/share/nvim.bak
     mv ~/.local/state/nvim ~/.local/state/nvim.bak
     mv ~/.cache/nvim ~/.cache/nvim.bak
     git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
+
     cd /root || return
     rm -rf neovim
 }
@@ -227,24 +267,30 @@ install_neovim() {
 install_desktop_default() {
     install_headless
     install_packages kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp && systemctl enable --now xrdp
+    read -rp "Continue?" confirmation #debug
     cleanup
+    read -rp "Continue?" confirmation #debug
 }
 
 # Function to install all including pimp my kali
 install_all_pimp() {
     install_desktop_default
+    read -rp "Continue?" confirmation #debug
     clone_or_skip "https://github.com/Dewalt-arch/pimpmykali.git" "pimpmykali"
-
+    read -rp "Continue?" confirmation #debug
     cd pimpmykali || {
         echo "Failed to cd to pimpmykali..." >&2
         exit 1
     }
+    read -rp "Continue?" confirmation #debug
     ./pimpmykali.sh || {
         echo "Failed to run pimpmykali.sh" >&2
         exit 1
     }
+    read -rp "Continue?" confirmation #debug
     cd /root || exit
     rm -rf pimpmykali
+    read -rp "Continue?" confirmation #debug
     cleanup
 }
 
@@ -257,7 +303,7 @@ reboot_func() {
         if [[ $startx_needed -eq 1 ]]; then
             startx
         else
-            echo "Exiting script without rebooting and starting X"
+            echo "Exiting script without rebooting. Not starting X"
         fi
     fi
 }
@@ -269,7 +315,7 @@ display_menu() {
         echo "│      Choose an Option     │"
         echo "├───────────────────────────┤"
         echo "│   U: Update Kali Linux    │"
-        echo "│   I: Install Headless     │"
+        echo "│   H: Install Headless     │"
         echo "│   D: Install Desktop;     │"
         echo "│   A: Install All Tools    │"
         echo "|   V: Install OpenVAS      |"
@@ -280,7 +326,7 @@ display_menu() {
         read -rp "Your choice: " choice
         case $choice in
         U | u) update_kali ;;
-        I | i) install_headless ;;
+        H | h) install_headless ;;
         D | d)
             install_desktop_default
             startx_needed=1
