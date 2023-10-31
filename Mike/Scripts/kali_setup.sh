@@ -173,6 +173,12 @@ configure_tldr() {
 
 # Function to install docker compose
 install_docker() {
+
+    apt remove -yq docker docker-engine docker.io containerd runc || {
+        echo "Failed to remove existing docker. Exiting." >&2
+        exit 1
+    }
+
     curl -fsSL https://get.docker.com -o get-docker.sh || {
         echo "Failed to download get-docker.sh. Exiting." >&2
         exit 1
