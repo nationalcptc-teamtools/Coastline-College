@@ -292,6 +292,11 @@ install_all_pimp() {
 }
 
 install_openvas() {
+    if startx_needed -eq 0; then
+        echo "Desktop not installed. Install first and try again..."
+        exit 1
+    fi
+
     DOWNLOAD_DIR=/root/greenbone-community-container
 
     installed() {
