@@ -294,7 +294,7 @@ install_all_pimp() {
 }
 
 install_openvas() {
-    if $startx_needed -eq 0; then
+    if [[ $startx_needed -eq 0 ]]; then
         echo "Desktop not installed. Install first and try again..." >&2
         exit 1
     fi
@@ -389,7 +389,7 @@ display_menu() {
         H | h) install_headless ;;
         D | d)
             install_desktop_default
-            startx_needed=1
+            tartx_needed=1
             ;;
         A | a)
             install_all_pimp
@@ -405,7 +405,6 @@ display_menu() {
 }
 
 main() {
-
     change_to_root
     check_dependencies
     display_menu
