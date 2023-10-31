@@ -175,8 +175,7 @@ configure_tldr() {
 install_docker() {
 
     apt remove -yq docker docker-engine docker.io containerd runc || {
-        echo "Failed to remove existing docker. Exiting." >&2
-        exit 1
+        echo "Failed to remove existing docker. Continuing." >&2
     }
 
     curl -fsSL https://get.docker.com -o get-docker.sh || {
