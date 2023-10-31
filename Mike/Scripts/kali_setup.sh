@@ -1,4 +1,6 @@
 #!/bin/bash
+# Try global variable
+startx_needed=0
 
 # Check for help argument
 [[ $1 == "-h" || $1 == "--help" ]] && display_help
@@ -293,7 +295,7 @@ install_all_pimp() {
 
 install_openvas() {
     if startx_needed -eq 0; then
-        echo "Desktop not installed. Install first and try again..."
+        echo "Desktop not installed. Install first and try again..." >&2
         exit 1
     fi
 
@@ -403,7 +405,7 @@ display_menu() {
 }
 
 main() {
-    startx_needed=0
+
     change_to_root
     check_dependencies
     display_menu
