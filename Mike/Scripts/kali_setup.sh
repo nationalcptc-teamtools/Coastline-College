@@ -173,35 +173,27 @@ configure_tldr() {
 
 # Function to install docker compose
 install_docker() {
+    for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
+        apt remove -y $pkg
+    done
+    apt autoremove -y
 
-    apt remove -yq docker docker-engine docker.io containerd runc || {
-        echo "Failed to remove existing docker. Continuing." >&2
-    }
+    # Add Docker's official GPG key:
+    apt update
+    install_packages ca-certificates curl gnupg
+    apt install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
 
-    curl -fsSL https://get.docker.com -o get-docker.sh || {
-        echo "Failed to download get-docker.sh. Exiting." >&2
-        exit 1
-    }
+    # Add the repository to Apt sources:
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
+    apt update
 
-    sh get-docker.sh || {
-        echo "Failed to run get-docker.sh. Exiting." >&2
-        exit 1
-    }
-
-    rm get-docker.sh || {
-        echo "Failed to remove get-docker.sh. Exiting." >&2
-        exit 1
-    }
-
-    usermod -aG docker root || {
-        echo "Failed to add root to docker group. Exiting." >&2
-        exit 1
-    }
-
-    systemctl enable --now docker || {
-        echo "Failed to enable docker. Exiting." >&2
-        exit 1
-    }
+    # Install Docker Engine:
+    install_packages docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    usermod -aG docker root
+    systemctl enable --now docker.service
+    systemctl enable --now containerd.service
 
     # Check for "docker compose command"
     ! command -v docker compose >/dev/null && {
