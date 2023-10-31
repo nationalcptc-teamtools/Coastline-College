@@ -2,6 +2,13 @@
 # Try global variable
 startx_needed=0
 
+# Function to display help menu
+display_help() {
+    echo "Usage: sudo $0 [option]"
+    echo "Options: -h|--help"
+    exit 0
+}
+
 # Check for help argument
 [[ $1 == "-h" || $1 == "--help" ]] && display_help
 
@@ -99,13 +106,6 @@ check_dependencies() {
         echo "Failed to install git" >&2
         exit 1
     }
-}
-
-# Function to display help menu
-display_help() {
-    echo "Usage: sudo $0 [option]"
-    echo "Options: -h|--help"
-    exit 0
 }
 
 # Function to change repositories to Cloudflare
