@@ -1,6 +1,4 @@
 #!/bin/bash
-# Try global variable
-startx_needed=0
 
 # Function to display help menu
 display_help() {
@@ -293,9 +291,11 @@ install_all_pimp() {
     cleanup
 }
 
+# Function to install OpenVAS taken from https://greenbone.github.io/docs/latest/_static/setup-and-start-greenbone-community-edition.sh
 install_openvas() {
-    if [[ $startx_needed -eq 0 ]]; then
-        echo "Desktop not installed. Install first and try again..." >&2
+    # Check for running Desktop
+    if ! xdpyinfo &>/dev/null; then
+        echo "This Function requires a running Desktop. Exiting." >&2
         exit 1
     fi
 
@@ -352,6 +352,12 @@ install_openvas() {
     echo "The feed data will be loaded now. This process may take several minutes up to hours."
     echo "Before the data is not loaded completely, scans will show insufficient or erroneous results."
     echo "See https://greenbone.github.io/docs/latest/$RELEASE/container/workflows.html#loading-the-feed-changes for more details."
+    echo ""
+    echo "Would you like to open the web interface now? [Y/n]"
+    read -r open_webinterface
+    if [[ $open_webinterface =~ ^[Yy]$ ]] || [[ -z $open_webinterface ]]; then
+        firefox https://127.0.0.1:9392
+    fi
 }
 
 # Quit function
@@ -379,6 +385,7 @@ display_menu() {
         echo "│   D: Install Desktop;     │"
         echo "│   A: Install All Tools    │"
         echo "|   V: Install OpenVAS      |"
+        echo "|      - (Desktop Required) |"
         echo "|   T: Copy tmux config     |"
         echo "│   C: Change Repos         │"
         echo "│   Q: Quit                 │"
@@ -389,7 +396,7 @@ display_menu() {
         H | h) install_headless ;;
         D | d)
             install_desktop_default
-            tartx_needed=1
+            startx_needed=1
             ;;
         A | a)
             install_all_pimp
@@ -405,6 +412,7 @@ display_menu() {
 }
 
 main() {
+    startx_needed=0
     change_to_root
     check_dependencies
     display_menu
