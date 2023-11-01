@@ -294,10 +294,10 @@ install_all_pimp() {
 # Function to install OpenVAS taken from https://greenbone.github.io/docs/latest/_static/setup-and-start-greenbone-community-edition.sh
 install_openvas() {
     # Check for running Desktop
-    if ! xdpyinfo &>/dev/null; then
-        echo "This Function requires a running Desktop. Exiting." >&2
-        exit 1
-    fi
+    # if ! xdpyinfo &>/dev/null; then
+    #     echo "This Function requires a running Desktop. Exiting." >&2
+    #     exit 1
+    # fi
 
     DOWNLOAD_DIR=/root/greenbone-community-container
 
@@ -317,7 +317,7 @@ install_openvas() {
         fi
 
         if [ $failed -ne 0 ]; then
-            echo "$* is not available. See https://greenbone.github.io/docs/latest/$RELEASE/container/#prerequisites."
+            echo "$* is not available. See https://greenbone.github.io/docs/latest/$RELEASE/container/#prerequisites." >&2
             exit 1
         fi
 
@@ -335,6 +335,8 @@ install_openvas() {
 
     echo "Downloading docker-compose file..."
     curl -f -O https://greenbone.github.io/docs/latest/_static/docker-compose-$RELEASE.yml
+    # Bind to all interfaces
+    sed -i 's/- 127.0.0.1:9392:80/- "0.0.0.0:9392:80"/' docker-compose-$RELEASE.yml
 
     echo "Pulling Greenbone Community Containers $RELEASE"
     docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition pull
