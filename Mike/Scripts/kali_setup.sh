@@ -205,22 +205,21 @@ install_docker() {
 # Function to install headless tools
 install_headless() {
     update_kali
-    read -rp "Continue?" confirmation #debug
+
     install_packages kali-linux-headless htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm ufw
-    read -rp "Continue?" confirmation #debug
+
     enable_ssh
-    read -rp "Continue?" confirmation #debug
+
     install_docker
-    read -rp "Continue?" confirmation #debug
+
     configure_tldr
-    read -rp "Continue?" confirmation #debug
+
     if command -v nvim >/dev/null; then
         echo "Neovim already installed. Skipping..."
     else
         install_neovim
     fi
     cleanup
-    read -rp "Continue?" confirmation #debug
 }
 
 # Function to install neovim
@@ -263,41 +262,37 @@ install_neovim() {
 # Function to install Desktop
 install_desktop_default() {
     install_headless
+
     install_packages kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp && systemctl enable --now xrdp
-    read -rp "Continue?" confirmation #debug
+
     cleanup
-    read -rp "Continue?" confirmation #debug
+
 }
 
 # Function to install all including pimp my kali
 install_all_pimp() {
     install_desktop_default
-    read -rp "Continue?" confirmation #debug
+
     clone_or_skip "https://github.com/Dewalt-arch/pimpmykali.git" "pimpmykali"
-    read -rp "Continue?" confirmation #debug
+
     cd pimpmykali || {
         echo "Failed to cd to pimpmykali..." >&2
         exit 1
     }
-    read -rp "Continue?" confirmation #debug
+
     ./pimpmykali.sh || {
         echo "Failed to run pimpmykali.sh" >&2
         exit 1
     }
-    read -rp "Continue?" confirmation #debug
+
     cd /root || exit
     rm -rf pimpmykali
-    read -rp "Continue?" confirmation #debug
+
     cleanup
 }
 
 # Function to install OpenVAS taken from https://greenbone.github.io/docs/latest/_static/setup-and-start-greenbone-community-edition.sh
 install_openvas() {
-    # Check for running Desktop
-    # if ! xdpyinfo &>/dev/null; then
-    #     echo "This Function requires a running Desktop. Exiting." >&2
-    #     exit 1
-    # fi
 
     DOWNLOAD_DIR=/root/greenbone-community-container
 
