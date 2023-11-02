@@ -292,7 +292,7 @@ install_all_pimp() {
 }
 
 # Function to install OpenVAS taken from https://greenbone.github.io/docs/latest/_static/setup-and-start-greenbone-community-edition.sh
-install_openvas() {
+setup_openvas() {
 
     DOWNLOAD_DIR=/root/greenbone-community-container
 
@@ -355,6 +355,47 @@ install_openvas() {
     if [[ $open_webinterface =~ ^[Yy]$ ]] || [[ -z $open_webinterface ]]; then
         firefox https://127.0.0.1:9392
     fi
+}
+
+# Function to import openVAS configs
+import_configs_openVAS() {
+    apt install gvm-tools -yq || {
+        echo "Failed to install gvm-tools" >&2
+        exit 1
+    }
+
+    # Check that openvas docker compose is running. If not running, continue retrying every 30 seconds
+    while ! docker ps | grep -q openvas; do
+        echo "Waiting for openvas docker compose to start..."
+        sleep 5
+    done
+
+    # Check that the openvas web interface is available. If not available, continue retrying every 30 seconds
+    while ! curl -s -k http://127.0.0.1:9392 | grep -q "Greenbone Security Assistant"; do
+        echo "Waiting for openvas web interface to be available..."
+        sleep 5
+    done
+
+    apt install gvm-tools -yq || {
+        echo "Failed to install gvm-tools" >&2
+        exit 1
+    }
+
+}
+
+install_openvas() {
+    setup_openvas || {
+        echo "Failed to setup openvas" >&2
+        exit 1
+    }
+    import_configs_openVAS || {
+        echo "Failed to import configs" >&2
+        exit 1
+    }
+    cleanup || {
+        echo "Failed to cleanup" >&2
+        exit 1
+    }
 }
 
 # Quit function
