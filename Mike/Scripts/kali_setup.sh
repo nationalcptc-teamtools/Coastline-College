@@ -214,16 +214,16 @@ install_headless() {
 
     configure_tldr
 
-    if command -v nvim >/dev/null; then
-        echo "Neovim already installed. Skipping..."
-    else
-        install_neovim
-    fi
     cleanup
 }
 
 # Function to install neovim
 install_neovim() {
+    if command -v nvim >/dev/null; then
+        echo "Neovim already installed. Skipping..."
+        return
+    fi
+
     clone_or_skip "https://github.com/neovim/neovim" "neovim"
 
     cd neovim || {
@@ -413,7 +413,7 @@ display_menu() {
         echo "│   D: Install Desktop;     │"
         echo "│   A: Install All Tools    │"
         echo "|   V: Install OpenVAS      |"
-        echo "|      - (Desktop Required) |"
+        echo "|   N: Install Neovim       |"
         echo "|   T: Copy tmux config     |"
         echo "│   C: Change Repos         │"
         echo "│   Q: Quit                 │"
@@ -431,6 +431,7 @@ display_menu() {
             startx_needed=1
             ;;
         V | v) install_openvas ;;
+        N | n) install_neovim ;;
         T | t) copy_tmux ;;
         C | c) change_repos ;;
         Q | q) reboot_func && exit 0 ;;
