@@ -239,6 +239,7 @@ install_neovim() {
         echo "Failed to make neovim..."
         exit 1
     }
+
     cd build && cpack -G DEB && dpkg -i nvim-linux64.deb
 
     download_and_unzip "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip" "/root/.fonts"
@@ -266,7 +267,6 @@ install_desktop_default() {
     install_packages kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp && systemctl enable --now xrdp
 
     cleanup
-
 }
 
 # Function to install all including pimp my kali
@@ -341,20 +341,10 @@ setup_openvas() {
     docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition up -d
     echo
 
-    read -s -rp "Password for admin user: " password
-    docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition \
-        exec -u gvmd gvmd gvmd --user=admin --new-password="$password"
-
     echo
     echo "The feed data will be loaded now. This process may take several minutes up to hours."
     echo "Before the data is not loaded completely, scans will show insufficient or erroneous results."
     echo "See https://greenbone.github.io/docs/latest/$RELEASE/container/workflows.html#loading-the-feed-changes for more details."
-    echo ""
-    echo "Would you like to open the web interface now? [Y/n]"
-    read -r open_webinterface
-    if [[ $open_webinterface =~ ^[Yy]$ ]] || [[ -z $open_webinterface ]]; then
-        firefox https://127.0.0.1:9392
-    fi
 }
 
 # Function to import openVAS configs
