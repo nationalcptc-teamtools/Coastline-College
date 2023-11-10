@@ -24,11 +24,11 @@ sqlcmd -S <server> -U <username> -P <pasword> [-N -C [-y 30 -Y 30]]
 #### **sqsh**
 
 ```bash    
-sqsh -S <server> -U <user> -P '<password>' -h => SQL Auth`
+sqsh -S <server> -U <user> -P '<password>' -h # SQL Auth
 ```
 
 ```bash
-sqsh -S <server> -U <SERVER_NAME>\\<user> -P '<password>' -h => Windows Auth
+sqsh -S <server> -U <SERVER_NAME>\\<user> -P '<password>' -h # Windows Auth
 ```
 
 #### **impacket-mssqlclient**
