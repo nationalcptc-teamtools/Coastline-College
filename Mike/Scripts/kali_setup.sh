@@ -17,7 +17,7 @@ display_help() {
 # }
 
 # Change to root directory before execution
-change_to_home() {
+change_to_kali() {
     cd /home/kali || {
         echo "Failed to change to /home/kali directory. Exiting." >&2
         exit 1
