@@ -2,7 +2,7 @@
 
 # Function to display help menu
 display_help() {
-    echo "Usage: sudo $0 [option]"
+    echo "Usage: $0 [option]"
     echo "Options: -h|--help"
     exit 0
 }
@@ -10,16 +10,16 @@ display_help() {
 # Check for help argument
 [[ $1 == "-h" || $1 == "--help" ]] && display_help
 
-# Verify running with sudo or as root
-[[ $EUID -ne 0 ]] && {
-    echo "Run as root. Exiting."
-    exit 1
-}
+# # Verify running with sudo or as root
+# [[ $EUID -ne 0 ]] && {
+#     echo "Run as root. Exiting."
+#     exit 1
+# }
 
 # Change to root directory before execution
-change_to_root() {
-    cd /root || {
-        echo "Failed to change to /root directory. Exiting." >&2
+change_to_home() {
+    cd /home/kali || {
+        echo "Failed to change to /home/kali directory. Exiting." >&2
         exit 1
     }
 }
@@ -31,16 +31,16 @@ copy_tmux() {
         echo "Cancelled."
         return
     }
-    cp /root/Coastline-College/Mike/Scripts/.tmux.conf /root/ || {
-        echo "Failed to copy .tmux.conf to /root/. Exiting." >&2
+    sudo cp /home/kali/Coastline-College/Mike/Scripts/.tmux.conf /home/kali || {
+        echo "Failed to copy .tmux.conf to /home/kali. Exiting." >&2
         exit 1
     }
-    echo "Copied .tmux.conf to /root/"
+    echo "Copied .tmux.conf to /home/kali"
 }
 
 # Install packages
 install_packages() {
-    apt install -yq "$@" || {
+    sudo apt install -yq "$@" || {
         echo "Network issue... Exiting now."
         exit 1
     }
@@ -60,7 +60,7 @@ clone_or_skip() {
 # Backup a file
 backup_file() {
     local file_path="$1"
-    cp "$file_path" "${file_path}.bak" || {
+    sudo cp "$file_path" "${file_path}.bak" || {
         echo "Backup failed for $file_path" >&2
         exit 1
     }
@@ -96,11 +96,11 @@ remove_directory() {
 # Check for necessary dependencies
 check_dependencies() {
     echo "Updating package list..."
-    apt update -q || {
+    sudo apt update -q || {
         echo "Failed to update package list" >&2
         exit 1
     }
-    dpkg -l | grep -qw git || apt install -yq git || {
+    sudo dpkg -l | grep -qw git || sudo apt install -yq git || {
         echo "Failed to install git" >&2
         exit 1
     }
@@ -114,7 +114,7 @@ change_repos() {
         return
     }
     backup_file "/etc/apt/sources.list" || exit 1
-    sed -i 's|http://http.kali.org/kali|http://kali.download/kali|g' /etc/apt/sources.list || {
+    sudo sed -i 's|http://http.kali.org/kali|http://kali.download/kali|g' /etc/apt/sources.list || {
         echo "Failed to change repositories" >&2
         exit 1
     }
@@ -122,17 +122,17 @@ change_repos() {
 
 # Function to update Kali Linux
 update_kali() {
-    apt update -q && apt dist-upgrade -y && apt autoremove -yq
+    sudo apt update -q && sudo apt dist-upgrade -y && sudo apt autoremove -yq
 }
 
 # Function to clean up
 cleanup() {
-    if ! apt clean || ! apt autoclean || ! apt autoremove -y; then
+    if ! sudo apt clean || ! sudo apt autoclean || ! sudo apt autoremove -y; then
         echo "Failed to clean up" >&2
         exit 1
     fi
 
-    if ! rm -rf /var/cache/apt/archives/*; then
+    if ! sudo rm -rf /var/cache/apt/archives/*; then
         echo "Failed to remove cache" >&2
         exit 1
     fi
@@ -140,22 +140,22 @@ cleanup() {
 
 # Function to enable ssh
 enable_ssh() {
-    systemctl enable --now ssh || {
+    sudo systemctl enable --now ssh || {
         echo "Failed to enable ssh. Exiting." >&2
         exit 1
     }
 
-    ufw allow 22/tcp || {
+    sudo ufw allow 22/tcp || {
         echo "Failed to allow ssh. Exiting." >&2
         exit 1
     }
 
-    sed -i 's|PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config || {
+    sudo sed -i 's|PermitRootLogin prohibit-password|PermitRootLogin yes|g' /etc/ssh/sshd_config || {
         echo "Failed to change sshd_config. Exiting." >&2
         exit 1
     }
 
-    systemctl restart ssh || {
+    sudo systemctl restart ssh || {
         echo "Failed to restart ssh. Exiting." >&2
         exit 1
     }
@@ -163,8 +163,8 @@ enable_ssh() {
 
 # Function to configure tldr
 configure_tldr() {
-    mkdir -p /root/.local/share/tldr || {
-        echo "Failed to create /root/.local/share/tldr. Exiting." >&2
+    mkdir -p /home/kali/.local/share/tldr || {
+        echo "Failed to create /home/kali/.local/share/tldr. Exiting." >&2
         exit 1
     }
 
@@ -174,26 +174,26 @@ configure_tldr() {
 # Function to install docker compose
 install_docker() {
     for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do
-        apt remove -y $pkg
+        sudo apt remove -y $pkg
     done
-    apt autoremove -y
+    sudo apt autoremove -y
 
     # Add Docker's official GPG key:
-    apt update
+    sudo apt update
     install_packages ca-certificates curl gnupg
-    apt install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    chmod a+r /etc/apt/keyrings/docker.gpg
+    sudo apt install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
     # Add the repository to Apt sources:
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list >/dev/null
-    apt update
+    sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+    sudo apt update
 
     # Install Docker Engine:
     install_packages docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    usermod -aG docker root
-    systemctl enable --now docker.service
-    systemctl enable --now containerd.service
+    sudo usermod -aG docker kali
+    sudo systemctl enable --now docker.service
+    sudo systemctl enable --now containerd.service
 
     # Check for "docker compose command"
     ! command -v docker compose >/dev/null && {
@@ -206,7 +206,7 @@ install_docker() {
 install_headless() {
     update_kali
 
-    install_packages kali-linux-headless htop btop vim tldr ninja-build gettext cmake unzip curl cargo ripgrep gdu npm ufw
+    install_packages kali-linux-headless htop btop vim tldr ninja-build gettext cmake unzip curl cargo gdu npm ufw
 
     enable_ssh
 
@@ -240,15 +240,15 @@ install_neovim() {
         exit 1
     }
 
-    cd build && cpack -G DEB && dpkg -i nvim-linux64.deb
+    cd build && cpack -G DEB && sudo dpkg -i nvim-linux64.deb
 
-    download_and_unzip "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip" "/root/.fonts"
+    download_and_unzip "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/CascadiaCode.zip" "/home/kali/.fonts"
     fc-cache -fv
 
     cargo install tree-sitter-cli
 
     curl -LO https://github.com/ClementTsang/bottom/releases/download/0.9.6/bottom_0.9.6_amd64.deb
-    dpkg -i bottom_0.9.6_amd64.deb
+    sudo dpkg -i bottom_0.9.6_amd64.deb
 
     mv ~/.config/nvim ~/.config/nvim.bak
     mv ~/.local/share/nvim ~/.local/share/nvim.bak
@@ -256,7 +256,7 @@ install_neovim() {
     mv ~/.cache/nvim ~/.cache/nvim.bak
     git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 
-    cd /root || return
+    cd /home/kali || return
     rm -rf neovim
 }
 
@@ -264,7 +264,7 @@ install_neovim() {
 install_desktop_default() {
     install_headless
 
-    install_packages kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp && systemctl enable --now xrdp
+    install_packages kali-desktop-xfce kali-linux-default kali-tools-top10 xrdp && sudo systemctl enable --now xrdp
 
     cleanup
 }
@@ -280,12 +280,12 @@ install_all_pimp() {
         exit 1
     }
 
-    ./pimpmykali.sh || {
+    sudo ./pimpmykali.sh || {
         echo "Failed to run pimpmykali.sh" >&2
         exit 1
     }
 
-    cd /root || exit
+    cd /home/kali || exit
     rm -rf pimpmykali
 
     cleanup
@@ -294,7 +294,7 @@ install_all_pimp() {
 # Function to install OpenVAS taken from https://greenbone.github.io/docs/latest/_static/setup-and-start-greenbone-community-edition.sh
 setup_openvas() {
 
-    DOWNLOAD_DIR=/root/greenbone-community-container
+    DOWNLOAD_DIR=/home/kali/greenbone-community-container
 
     installed() {
         # $1 should be the command to look for. If $2 is set, we have arguments
@@ -349,24 +349,28 @@ setup_openvas() {
 
 # Function to import openVAS configs
 import_configs_openVAS() {
-    apt install gvm-tools -yq || {
+    sudo apt install gvm-tools -yq || {
         echo "Failed to install gvm-tools" >&2
         exit 1
     }
 
     # Check that openvas docker compose is running. If not running, continue retrying every 30 seconds
-    while ! docker ps | grep -q openvas; do
-        echo "Waiting for openvas docker compose to start..."
+    while ! docker ps | grep -q openvas || docker ps | grep openvas | grep -q starting; do
+        echo "====================================================================================="
+        echo "Waiting for openvas docker compose to start and not be in a 'starting' state..."
+        echo "====================================================================================="
         sleep 5
     done
 
     # Check that the openvas web interface is available. If not available, continue retrying every 30 seconds
     while ! curl -s -k http://127.0.0.1:9392 | grep -q "Greenbone Security Assistant"; do
+        echo "====================================================================================="
         echo "Waiting for openvas web interface to be available..."
+        echo "====================================================================================="
         sleep 5
     done
 
-    apt install gvm-tools -yq || {
+    sudo apt install gvm-tools -yq || {
         echo "Failed to install gvm-tools" >&2
         exit 1
     }
@@ -442,7 +446,7 @@ display_menu() {
 
 main() {
     startx_needed=0
-    change_to_root
+    change_to_kali
     check_dependencies
     display_menu
 }
