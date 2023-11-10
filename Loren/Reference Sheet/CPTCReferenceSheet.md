@@ -309,3 +309,104 @@ Self (Self-Membership) - ability to add yourself to a group
 ```bash
 curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b <InstallPath>
 ```
+
+# Additional Notes
+
+**Webmin Vulns**
+[Webmin-CVE](https://github.com/kh4sh3i/Webmin-CVE)
+
+**Split PKI Into Key Pair**
+
+```sh
+openssl pkcs12 -in <pfx> -nocerts -out <key>
+openssl pkcs12 -in <pfx> -clcerts -nokeys -out <crt>
+```
+**Enumerate Vulnerable Certificate Templates**
+
+```sh
+certipy find -enabled -vulnerable -target <target> -u <usr> -p <pwd> -stdout
+```
+
+**Request Signed PFX as Alternate Subject**
+
+```sh
+certipy req -ca <CA> -template UserAuthentication -upn <upn/email> -target <target> -u <usr> -p <pwd>
+```
+
+**Dump Subject Hash via PassTheTicket w/ Generated PFX**
+
+```sh
+certipy auth -pfx <pfx> -ptt -username <usr> -domain <domain>
+```
+
+**Check For PrintNightmare**
+
+```sh
+impacket-rpcdump @<ip> | egrep 'MS-RPRN|MS-PAR'
+```
+
+**Python3 Virtual Environment**
+
+```sh
+python3 -m venv venv
+source venv/bin/activate
+```
+
+## Apache Kafka
+
+[Kafka in Travel Industry](https://www.slideshare.net/KaiWaehner/apache-kafka-in-the-airline-aviation-and-travel-industry)
+
+**Ports**
+
+- Kafka 9092/TCP, 9093/TCP
+- Zookeeper 2181/TCP (Client), 2888/TCP (Follower), 3888/TCP (inter nodes)
+- Configure w/ server.properties
+
+**Main Components:**
+
+- Producers
+- Kafka Brokers
+- Topics
+- Consumers
+- Zookeeper
+
+**Other Components**
+
+- Apache Kafka Connect API
+- KSQL
+- Kafka Streams App
+- Kafka Cluster/Brokers
+- JDBC
+
+**Tools**
+
+- Kafka-topic-analyzer
+- Ksqldb-cli (docker)
+- Kafkacat (Kafka netcat)
+- Kafka-ui
+- Kafka-cli
+- Lenses
+- Kafdrop
+- CMAK
+
+**Vulnerabilities**
+
+[CVE List](https://kafka.apache.org/cve-list)
+
+[CVE-2023-46604](https://www.rapid7.com/blog/post/2023/11/01/etr-suspected-exploitation-of-apache-activemq-cve-2023-46604/)
+
+[POC](https://github.com/SaumyajeetDas/CVE-2023-46604-RCE-Reverse-Shell-Apache-ActiveMQ)
+
+- HTML Entity Encode Payload
+
+[CVE-2016-3088](https://github.com/cyberaguiar/CVE-2016-3088)
+
+[CVE-2023-25194](https://nvd.nist.gov/vuln/detail/CVE-2023-25194)
+
+[CVE-2022-23302](https://nvd.nist.gov/vuln/detail/CVE-2022-23302)
+
+[CVE-2022-23305](https://nvd.nist.gov/vuln/detail/CVE-2022-23305)
+
+- SQL Injection in JDBCAppender
+
+[CVE-2021-4104](https://access.redhat.com/security/cve/CVE-2021-4104)
