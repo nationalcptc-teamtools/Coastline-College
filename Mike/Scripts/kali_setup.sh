@@ -326,12 +326,19 @@ setup_openvas() {
 
     echo "Using Greenbone Community Containers $RELEASE"
 
-    mkdir -p "$DOWNLOAD_DIR" && cd $DOWNLOAD_DIR || exit
+    mkdir -p "$DOWNLOAD_DIR" && cd "$DOWNLOAD_DIR" || exit
+
+    # Create the gvmd directory
+    mkdir -p /home/kali/run/gvmd
 
     echo "Downloading docker-compose file..."
     curl -f -O https://greenbone.github.io/docs/latest/_static/docker-compose-$RELEASE.yml
+
     # Bind to all interfaces
     sed -i 's/- 127.0.0.1:9392:80/- "0.0.0.0:9392:80"/' docker-compose-$RELEASE.yml
+
+    # Add mounting for gvmd
+    sed -i '/gvmd:/,/depends_on:/s|- gvmd_socket_vol:/run/gvmd|- /home/kali/run/gvmd:/run/gvmd|' docker-compose-$RELEASE.yml
 
     echo "Pulling Greenbone Community Containers $RELEASE"
     docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition pull
