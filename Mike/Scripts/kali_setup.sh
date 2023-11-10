@@ -340,13 +340,13 @@ setup_openvas() {
     # Add mounting for gvmd
     # sed -i '/gvmd:/,/depends_on:/s|- gvmd_socket_vol:/run/gvmd|- /home/kali/run/gvmd:/run/gvmd|' docker-compose-$RELEASE.yml
 
-    # echo "Pulling Greenbone Community Containers $RELEASE"
-    # docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition pull
-    # echo
+    echo "Pulling Greenbone Community Containers $RELEASE"
+    docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition pull
+    echo
 
-    # echo "Starting Greenbone Community Containers $RELEASE"
-    # docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition up -d
-    # echo
+    echo "Starting Greenbone Community Containers $RELEASE"
+    docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition up -d
+    echo
 
     echo
     echo "The feed data will be loaded now. This process may take several minutes up to hours."
