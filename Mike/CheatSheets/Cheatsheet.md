@@ -36,17 +36,17 @@
 | `[Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))`                              | Encode a string with base64                            |
 | `iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('dwBoAG8AYQBtAGkA')))"` | Execute b64 encoded string                             |
 ## Ffuf
-| **Command**                                                                                                                                 | **Description**          |
-| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ`                                                                                   | Directory Fuzzing        |
-| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/indexFUZZ`                                                                              | Extension Fuzzing        |
-| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ.php`                                                                               | Page Fuzzing             |
-| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ -recursion -recursion-depth 1 -e .php -v`                                          | Recursive Fuzzing        |
-| `ffuf -w wordlist.txt:FUZZ -u https://FUZZ.URL/`                                                                                            | Sub-domain Fuzzing       |
-| `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/ -H 'Host: FUZZ.URL' -fs xxx`                                                                 | VHost Fuzzing            |
-| `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/login.php?FUZZ=key -fs xxx`                                                                   | Parameter Fuzzing - GET  |
-| `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/login.php -X POST -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx` | Parameter Fuzzing - POST |
-| `ffuf -w ids.txt:FUZZ -u http://URL:PORT/login.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs xxx`       | Value Fuzzing            |
+| **Command**                                                                                                                                       | **Description**          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ`                                                                                         | Directory Fuzzing        |
+| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/indexFUZZ`                                                                                    | Extension Fuzzing        |
+| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ.php`                                                                                     | Page Fuzzing             |
+| `ffuf -w wordlist.txt:FUZZ -u http://SERVER_IP:PORT/FUZZ -recursion -recursion-depth 1 -e .php -v`                                                | Recursive Fuzzing        |
+| `ffuf -w wordlist.txt:FUZZ -u https://FUZZ.URL/`                                                                                                  | Sub-domain Fuzzing       |
+| `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/ -H 'Host: FUZZ.URL' -fs FILE-SIZE`                                                                 | VHost Fuzzing            |
+| `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/login.php?FUZZ=key -fs FILE-SIZE`                                                                   | Parameter Fuzzing - GET  |
+| `ffuf -w wordlist.txt:FUZZ -u http://URL:PORT/login.php -X POST -d 'FUZZ=key' -H 'Content-Type: application/x-www-form-urlencoded' -fs FILE-SIZE` | Parameter Fuzzing - POST |
+| `ffuf -w ids.txt:FUZZ -u http://URL:PORT/login.php -X POST -d 'id=FUZZ' -H 'Content-Type: application/x-www-form-urlencoded' -fs FILE-SIZE`       | Value Fuzzing            |
 ## File transfers
 | **Command**                                                                                                        | **Description**                              |
 | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
