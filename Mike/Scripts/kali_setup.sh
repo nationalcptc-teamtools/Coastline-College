@@ -295,6 +295,8 @@ install_all_pimp() {
 setup_openvas() {
 
     DOWNLOAD_DIR=/home/kali/greenbone-community-container
+    DOCKERFILE_DIR=$DOWNLOAD_DIR/custom-gvmd
+    CUSTOM_IMAGE_NAME="custom-gvmd"
 
     installed() {
         # $1 should be the command to look for. If $2 is set, we have arguments
@@ -318,6 +320,29 @@ setup_openvas() {
 
     }
 
+    create_dockerfile() {
+        mkdir -p "$DOCKERFILE_DIR"
+        cat >"$DOCKERFILE_DIR/Dockerfile" <<EOF
+        # Use the gvmd image as a base
+        FROM greenbone/gvmd:stable
+
+        # Install gvm-cli and other dependencies
+        RUN apt-get update && \
+            apt-get install -y python3-pip && \
+            pip3 install gvm-tools
+
+EOF
+    }
+
+    build_docker_image() {
+        docker build -t "$CUSTOM_IMAGE_NAME" "$DOCKERFILE_DIR"
+    }
+
+    modify_docker_compose() {
+        sed -i "/image: greenbone\/gvmd:stable/c\    image: $CUSTOM_IMAGE_NAME" "$DOWNLOAD_DIR/docker-compose-$RELEASE.yml"
+        sed -i 's/- 127.0.0.1:9392:80/- "0.0.0.0:9392:80"/' docker-compose-"$RELEASE".yml
+    }
+
     RELEASE="22.4"
 
     installed curl
@@ -328,17 +353,13 @@ setup_openvas() {
 
     mkdir -p "$DOWNLOAD_DIR" && cd "$DOWNLOAD_DIR" || exit
 
-    # Create the gvmd directory
-    mkdir -p /home/kali/run/gvmd
-
     echo "Downloading docker-compose file..."
     curl -f -O https://greenbone.github.io/docs/latest/_static/docker-compose-$RELEASE.yml
 
-    # Bind to all interfaces
-    sed -i 's/- 127.0.0.1:9392:80/- "0.0.0.0:9392:80"/' docker-compose-$RELEASE.yml
-
-    # Add mounting for gvmd
-    # sed -i '/gvmd:/,/depends_on:/s|- gvmd_socket_vol:/run/gvmd|- /home/kali/run/gvmd:/run/gvmd|' docker-compose-$RELEASE.yml
+    # Modify Docker Compose file
+    create_dockerfile
+    build_docker_image
+    modify_docker_compose
 
     echo "Pulling Greenbone Community Containers $RELEASE"
     docker compose -f "$DOWNLOAD_DIR"/docker-compose-$RELEASE.yml -p greenbone-community-edition pull
