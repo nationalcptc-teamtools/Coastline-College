@@ -1,0 +1,19 @@
+Subject: [Action Required] Schedule Update
+
+Hello <employee>,
+
+Your schedule has been updated! Please view the attached document as soon as possible to avoid any unwanted time off :)
+
+[Viewing Instructions]
+
+- Download attachment to your device.
+- Navigate to Downloads folder
+- Double-Click on document to open.
+**- Right-Click on document and select "Run as administrator" //might be a bit of a reach...
+- Click "Enable Editing"
+
+Please reply directly to this email with any questions or concerns by clicking "Reply to".
+
+Regards,
+
+<client>
