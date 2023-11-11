@@ -360,41 +360,51 @@ import_configs_openVAS() {
         echo "Failed to install gvm-tools" >&2
         exit 1
     }
-
-    # Check that openvas docker compose is running. If not running, continue retrying every 30 seconds
-    while ! docker ps | grep -q openvas || docker ps | grep openvas | grep -q starting; do
-        echo "====================================================================================="
-        echo "Waiting for openvas docker compose to start and not be in a 'starting' state..."
-        echo "====================================================================================="
-        sleep 5
-    done
-
-    # Check that the openvas web interface is available. If not available, continue retrying every 30 seconds
-    while ! curl -s -k http://127.0.0.1:9392 | grep -q "Greenbone Security Assistant"; do
-        echo "====================================================================================="
-        echo "Waiting for openvas web interface to be available..."
-        echo "====================================================================================="
-        sleep 5
-    done
-
-    sudo apt install gvm-tools -yq || {
-        echo "Failed to install gvm-tools" >&2
-        exit 1
-    }
-
 }
 
 install_openvas() {
-    setup_openvas || {
+    read -rp "Install OpenVAS Package or Docker? (P/d): " openvas_choice
+    if [[ $openvas_choice =~ ^[Dd]$ ]]; then
+        setup_openvas || {
+            echo "Failed to setup openvas" >&2
+            exit 1
+        }
+        import_configs_openVAS || {
+            echo "Failed to import configs" >&2
+            exit 1
+        }
+        cleanup || {
+            echo "Failed to cleanup" >&2
+            exit 1
+        }
+        return
+    fi
+
+    # Install openvas package
+    install_packages openvas || {
+        echo "Failed to install openvas" >&2
+        exit 1
+    }
+    # Setup openvas package
+    sudo gvm-setup || {
         echo "Failed to setup openvas" >&2
         exit 1
     }
-    import_configs_openVAS || {
-        echo "Failed to import configs" >&2
+    # Check that openvas is setup
+    sudo gvm-check-setup || {
+        echo "Failed to check openvas setup" >&2
         exit 1
     }
-    cleanup || {
-        echo "Failed to cleanup" >&2
+
+    # Start openvas
+    sudo gvm-start || {
+        echo "Failed to start openvas" >&2
+        exit 1
+    }
+
+    # Install gvm-tools
+    import_configs_openVAS || {
+        echo "Failed to import configs" >&2
         exit 1
     }
 }
