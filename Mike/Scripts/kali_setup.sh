@@ -360,48 +360,16 @@ import_configs_openVAS() {
 }
 
 install_openvas() {
-    read -rp "Install OpenVAS Package or Docker? (P/d): " openvas_choice
-    if [[ $openvas_choice =~ ^[Dd]$ ]]; then
-        setup_openvas || {
-            echo "Failed to setup openvas" >&2
-            exit 1
-        }
-        import_configs_openVAS || {
-            echo "Failed to import configs" >&2
-            exit 1
-        }
-        cleanup || {
-            echo "Failed to cleanup" >&2
-            exit 1
-        }
-        return
-    fi
-
-    # Install openvas package
-    install_packages openvas || {
-        echo "Failed to install openvas" >&2
-        exit 1
-    }
-    # Setup openvas package
-    sudo gvm-setup || {
+    setup_openvas || {
         echo "Failed to setup openvas" >&2
         exit 1
     }
-    # Check that openvas is setup
-    sudo gvm-check-setup || {
-        echo "Failed to check openvas setup" >&2
-        exit 1
-    }
-
-    # Start openvas
-    sudo gvm-start || {
-        echo "Failed to start openvas" >&2
-        exit 1
-    }
-
-    # Install gvm-tools
     import_configs_openVAS || {
         echo "Failed to import configs" >&2
+        exit 1
+    }
+    cleanup || {
+        echo "Failed to cleanup" >&2
         exit 1
     }
 }
