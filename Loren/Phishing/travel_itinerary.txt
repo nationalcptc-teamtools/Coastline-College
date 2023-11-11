@@ -1,0 +1,14 @@
+Subject: Travel Itinerary Update
+
+Body:
+
+Hello <customer/traveler>,
+
+Your travel itinerary has been updated! Please review the attached document as soon as possible to avoid any unwanted delays. If you are unable to accommodate these changes, you may reply to this email with any concerns.
+
+Please make sure to include your full name, booking ID, frequent flyer number, and the last four digits of the card used for payment so we may process any reimbursements.
+
+We apologize for any inconvenience this may cause.
+
+Safe travels!
+<Your spoofed travel entity or email address>
