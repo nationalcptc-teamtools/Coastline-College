@@ -72,3 +72,12 @@
 | `./chisel server -v -p 1080 --socks5`                                                                                                | chisel server in verbose mode SOCKS5.                                                                 |
 | `./chisel client -v <ATTACK_IP>:1080 socks`                                                                                          | connect to a chisel server.                                                                           |
 | `regsvr32.exe SocksOverRDP-Plugin.dll`                                                                                               | register the SocksOverRDP-PLugin.dll.                                                                 |
+## Run OpenVAS Scans over proxychains
+| **Command**                                                                                                    | **Description**                     |
+| -------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `docker ps`                                                                                                    | Find container ID for gvmd          |
+| `docker exec -it <CONTAINER ID> /bin/bash`                                                                     | Enter container                     |
+| `adduser admin`                                                                                                | Add another user to run commands as |
+| `apt update && apt install -y python3-pip && pip3 install gvm-tools`                                           | Install gvm tools                   |
+| `proxychains docker exec -it -u admin <CONTAINER ID> gvm-cli socket --xml "<get_tasks />"`                     | Get all tasks                       |
+| `proxychains docker exec -it -u admin <CONTAINER ID> gvm-cli socket --xml "<start_task task_id='<TASK_ID>'/>"` | Run Task                            |
