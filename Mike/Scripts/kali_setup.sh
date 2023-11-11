@@ -296,7 +296,7 @@ setup_openvas() {
 
     DOWNLOAD_DIR=/home/kali/greenbone-community-container
     DOCKERFILE_DIR=$DOWNLOAD_DIR/custom-gvmd
-    CUSTOM_IMAGE_NAME="custom-gvmd"
+    CUSTOM_IMAGE_NAME="local/custom-gvmd"
 
     installed() {
         # $1 should be the command to look for. If $2 is set, we have arguments
