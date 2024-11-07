@@ -10,4 +10,5 @@ sudo powershell-empire client
 ```
 - starkiller at http://localhost:1337/index.html
 - default creds Empireadmin password123
+- enable csharp server for powershell exe payloads
 - 
