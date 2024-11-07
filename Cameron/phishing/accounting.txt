@@ -7,7 +7,9 @@ Today is the final day to qualify for this bonus so make sure to open the invoic
 Please follow the following instructions so we can pass this to the customer TODAY and you’ll see the bonus in THIS WEEKS CHECK and I heard it’s a BIG ONE!
 
 •	Open the attached xls invoice
+•	Click "Enable Editing" if prompted 
 •	If prompted that “Macros have been disabled” click “Enable Content” THIS IS VERY IMPORTANT as it automatically sends the invoice to the customer
+
 
 <insert picture of macros enabled here if possible>
 
